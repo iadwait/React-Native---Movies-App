@@ -4,11 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import TrendingMovies from '../Components/TrendingMovies';
 import { useState } from 'react'
 import MovieList from '../Components/MovieList';
+import { useNavigation } from '@react-navigation/native';
 // Images
 const menuImage = require('../Resources/Images/Menu.png');
 const searchImage = require('../Resources/Images/Search.png');
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   //const [trending, setTrending] = useState([1,2,3,4,5]);
   const [trending, setTrending] = useState([
     { id: '1', title: 'Avengers', image: require('../Resources/Images/MovieAvenger.jpg') },
@@ -29,7 +31,7 @@ const HomeScreen = () => {
             <Image style={[styles.icon, { marginLeft: 20 }]} source={menuImage} />
           </TouchableOpacity>
           <Text style={styles.moviesTitle}>Movies</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Search')}>
             <Image style={[styles.icon, { marginRight: 20 }]} source={searchImage} />
           </TouchableOpacity>
         </View>
