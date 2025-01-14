@@ -5,6 +5,7 @@ import TrendingMovies from '../Components/TrendingMovies';
 import { useState } from 'react'
 import MovieList from '../Components/MovieList';
 import { useNavigation } from '@react-navigation/native';
+import Loading from '../Components/loading';
 // Images
 const menuImage = require('../Resources/Images/Menu.png');
 const searchImage = require('../Resources/Images/Search.png');
@@ -21,6 +22,7 @@ const HomeScreen = () => {
   ]);
   const [upcomingMovie, setUpcomingMovie] = useState([1,2,3,4,5]);
   const [topRatedMovie, setTopRatedMovie] = useState([1,2,3,4,5]);
+  const [loading, setLoading] = useState(false);
   return (
     <View style={styles.backgroundView}>
       {/* SearchBar and Logo */}
@@ -37,21 +39,27 @@ const HomeScreen = () => {
         </View>
       </SafeAreaView>
 
-    <ScrollView
-      showVerticalScrollIndicator={false}
-      contentContainerStyle={{paddingBottom: 20}}
-    >
-    {/* Trending Movies Carousel */}
-    <TrendingMovies data={trending} />
+      {
+        loading ? (
+          <Loading />
+        ) : (
+          <ScrollView
+            showVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          >
+            {/* Trending Movies Carousel */}
+            <TrendingMovies data={trending} />
 
-    {/* Upcoming Movies */}
-    <MovieList title='Upcoming Movies' data={upcomingMovie} />
+            {/* Upcoming Movies */}
+            <MovieList title='Upcoming Movies' data={upcomingMovie} />
 
-    {/* Top Rated Movies */}
-    <MovieList title='Top Rated Movies' data={topRatedMovie} />
+            {/* Top Rated Movies */}
+            <MovieList title='Top Rated Movies' data={topRatedMovie} />
 
-    {/* Top Rated Movies */}
-    </ScrollView>
+            {/* Top Rated Movies */}
+          </ScrollView>
+        )
+      }
 
     </View>
   )

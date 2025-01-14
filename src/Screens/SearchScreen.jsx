@@ -4,17 +4,19 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { XMarkIcon } from 'react-native-heroicons/solid'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
+import Loading from '../Components/loading'
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const SearchScreen = () => {
   const navigation = useNavigation();
   let movieName = 'Ant-Man and the Wasp: Quantumania'
-  const [searchResults, setSearchResults] = useState([1,2,3,4,5]);
+  const [searchResults, setSearchResults] = useState([1, 2, 3, 4, 5]);
+  const [loading, setLoading] = useState(false);
   return (
     <SafeAreaView style={styles.backgroundView}>
       <View style={styles.searchView}>
-        <TextInput 
+        <TextInput
           placeholder="Search Movie"
           placeholderTextColor={'lightgray'}
           style={styles.searchTextfield}
@@ -25,41 +27,46 @@ const SearchScreen = () => {
       </View>
 
       {
-        searchResults.length>0 ? (
-          // Results
-          <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 15 }}
-        >
-          <Text style={{ color: 'white' }}>Results ({searchResults.length})</Text>
-          <View style={{ flexWrap: 'wrap', marginHorizontal: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-            {
-              searchResults.map((item, index) => {
-                return (
-                  <TouchableWithoutFeedback key={index}>
-                    <View style={{ marginVertical: 10 }}>
-                      <Image
-                        source={require('../Resources/Images/MovieAvenger.jpg')}
-                        style={{ width: width * 0.40, height: height * 0.20 }}
-                      />
-                      <Text style={{ color: 'lightgray', textAlign: 'center' }}>
-                        {
-                          movieName.length > 22 ? movieName.slice(0, 22) + '...' : movieName
-                        }
-                      </Text>
-                    </View>
-  
-                  </TouchableWithoutFeedback>
-                )
-              })
-            }
-          </View>
-        </ScrollView>
-        ): (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{color: 'white', fontWeight: 'bold'}}>No Results</Text>
-          </View>
+        loading ? (
+          <Loading />
+        ) : (
+          searchResults.length > 0 ? (
+            // Results
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 15 }}
+            >
+              <Text style={{ color: 'white' }}>Results ({searchResults.length})</Text>
+              <View style={{ flexWrap: 'wrap', marginHorizontal: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                {
+                  searchResults.map((item, index) => {
+                    return (
+                      <TouchableWithoutFeedback key={index}>
+                        <View style={{ marginVertical: 10 }}>
+                          <Image
+                            source={require('../Resources/Images/MovieAvenger.jpg')}
+                            style={{ width: width * 0.40, height: height * 0.20 }}
+                          />
+                          <Text style={{ color: 'lightgray', textAlign: 'center' }}>
+                            {
+                              movieName.length > 22 ? movieName.slice(0, 22) + '...' : movieName
+                            }
+                          </Text>
+                        </View>
+
+                      </TouchableWithoutFeedback>
+                    )
+                  })
+                }
+              </View>
+            </ScrollView>
+          ) : (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>No Results</Text>
+            </View>
+          )
         )
+
       }
 
     </SafeAreaView>

@@ -6,15 +6,17 @@ import { commonStyles } from '../Resources/Themes/commonThemes'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import MovieList from '../Components/MovieList'
+import Loading from '../Components/loading'
 
 const { width, height } = Dimensions.get('window');
 
 const PersonScreen = () => {
     const [isFavourite, toggleFavourite] = useState(false);
-    const [personMovies, setPersonMovies] = useState([1,2,3,4,5]);
+    const [personMovies, setPersonMovies] = useState([1, 2, 3, 4, 5]);
     const navigation = useNavigation();
+    const [loading, setLoading] = useState(false);
     return (
-        <ScrollView style={styles.backgroundView}>
+        <View style={styles.backgroundView}>
             <SafeAreaView style={styles.topContainer}>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} >
                     <Image
@@ -30,69 +32,77 @@ const PersonScreen = () => {
                 </TouchableOpacity>
             </SafeAreaView>
 
-            {/* Person Details */}
-            <View style={{ alignItems: 'center' }}>
-                <Image
-                    source={require('../Resources/Images/johnWickProfile.jpeg')}
-                    style={{
-                        height: width * 0.70,
-                        width: width * 0.70,
-                        borderRadius: width * 0.35,
-                        borderColor: 'gray',
-                        borderWidth: 1.5
-                    }}
-                />
-                <Text style={{
-                    fontSize: 28,
-                    color: 'white',
-                    fontWeight: 'bold',
-                    marginTop: 15
-                }}>Keanu Reeves</Text>
+            {
+                loading ? (
+                    <Loading />
+                ) : (
+                    <ScrollView>
+                        {/* Person Details */}
+                        <View style={{ alignItems: 'center' }}>
+                            <Image
+                                source={require('../Resources/Images/johnWickProfile.jpeg')}
+                                style={{
+                                    height: width * 0.70,
+                                    width: width * 0.70,
+                                    borderRadius: width * 0.35,
+                                    borderColor: 'gray',
+                                    borderWidth: 1.5
+                                }}
+                            />
+                            <Text style={{
+                                fontSize: 28,
+                                color: 'white',
+                                fontWeight: 'bold',
+                                marginTop: 15
+                            }}>Keanu Reeves</Text>
 
-                <Text style={{
-                    fontSize: 15,
-                    color: 'white',
-                    opacity: 0.5
-                }}>London, United Kingdom</Text>
-            </View>
-            <View style={styles.container}>
-                <View>
-                    <Text style={styles.titleText}>Gender</Text>
-                    <Text style={styles.valueText}>Male</Text>
-                </View>
+                            <Text style={{
+                                fontSize: 15,
+                                color: 'white',
+                                opacity: 0.5
+                            }}>London, United Kingdom</Text>
+                        </View>
+                        <View style={styles.container}>
+                            <View>
+                                <Text style={styles.titleText}>Gender</Text>
+                                <Text style={styles.valueText}>Male</Text>
+                            </View>
 
-                <View style={styles.verticalLine} />
+                            <View style={styles.verticalLine} />
 
-                <View>
-                    <Text style={styles.titleText}>BirthDay</Text>
-                    <Text style={styles.valueText}>1965-09-02</Text>
-                </View>
+                            <View>
+                                <Text style={styles.titleText}>BirthDay</Text>
+                                <Text style={styles.valueText}>1965-09-02</Text>
+                            </View>
 
-                <View style={styles.verticalLine} />
+                            <View style={styles.verticalLine} />
 
-                <View>
-                    <Text style={styles.titleText}>Known for</Text>
-                    <Text style={styles.valueText}>Acting</Text>
-                </View>
+                            <View>
+                                <Text style={styles.titleText}>Known for</Text>
+                                <Text style={styles.valueText}>Acting</Text>
+                            </View>
 
-                <View style={styles.verticalLine} />
+                            <View style={styles.verticalLine} />
 
-                <View>
-                    <Text style={styles.titleText}>Popularity</Text>
-                    <Text style={styles.valueText}>73.90</Text>
-                </View>
-            </View>
-            
-            {/* Biography */}
-            <View style={{ marginHorizontal: 20, marginVertical: 10 }}>
-                <Text style={{ color: 'white', fontSize: 22, fontWeight: 'bold' }}>Biography</Text>
-                <Text style={{ color: 'white', opacity: 0.4, fontSize: 14, marginTop: 10 }}>Wick entered the world of organized crime and became an enforcer for Viggo Tarasov, a ruthless Russian crime lord. His ability to eliminate targets with ruthless efficiency quickly earned him a fearsome reputation in the underworld. He was renowned for his expertise in various forms of combat, precision with firearms, and his unmatched ability to complete seemingly impossible tasks.Over time, John Wick became so feared that even the most dangerous criminals in the world respected and feared him. He was known as a man who could take down entire armies with a single weapon, earning the respect and fear of anyone who crossed his path.</Text>
-            </View>
+                            <View>
+                                <Text style={styles.titleText}>Popularity</Text>
+                                <Text style={styles.valueText}>73.90</Text>
+                            </View>
+                        </View>
 
-            {/* Movies */}
-            <MovieList title={"Movies"} hideSeeAll={true} data={personMovies} />
+                        {/* Biography */}
+                        <View style={{ marginHorizontal: 20, marginVertical: 10 }}>
+                            <Text style={{ color: 'white', fontSize: 22, fontWeight: 'bold' }}>Biography</Text>
+                            <Text style={{ color: 'white', opacity: 0.4, fontSize: 14, marginTop: 10 }}>Wick entered the world of organized crime and became an enforcer for Viggo Tarasov, a ruthless Russian crime lord. His ability to eliminate targets with ruthless efficiency quickly earned him a fearsome reputation in the underworld. He was renowned for his expertise in various forms of combat, precision with firearms, and his unmatched ability to complete seemingly impossible tasks.Over time, John Wick became so feared that even the most dangerous criminals in the world respected and feared him. He was known as a man who could take down entire armies with a single weapon, earning the respect and fear of anyone who crossed his path.</Text>
+                        </View>
 
-        </ScrollView>
+                        {/* Movies */}
+                        <MovieList title={"Movies"} hideSeeAll={true} data={personMovies} />
+
+                    </ScrollView>
+                )
+            }
+        </View>
     )
 }
 
