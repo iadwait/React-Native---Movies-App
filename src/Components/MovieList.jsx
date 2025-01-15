@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions
 import React from 'react'
 import { commonStyles } from '../Resources/Themes/commonThemes'
 import { useNavigation } from '@react-navigation/native'
+import { getImage185Path } from '../api/movie'
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,19 +31,20 @@ const MovieList = ({ title, data, hideSeeAll }) => {
           data.map((item, index) => {
             return (
               <TouchableWithoutFeedback
-              key={index}
-              onPress={()=> navigation.push('Movie', item)}
+                key={index}
+                onPress={() => navigation.push('Movie', item)}
               >
                 <View style={{ paddingHorizontal: 10 }}>
-                  <Image 
-                    source={require('../Resources/Images/bean.jpeg')}
+                  <Image
+                    // source={require('../Resources/Images/bean.jpeg')}
+                    source={{ uri: getImage185Path(item.poster_path) }}
                     style={styles.upcomingMovieImage}
                   />
                   <Text style={{ color: 'white', width: '100' }} numberOfLines={2} >
                     {
-                    movieName
+                      item.title
                     }
-                    </Text>
+                  </Text>
                 </View>
               </TouchableWithoutFeedback>
             )
@@ -69,8 +71,8 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   upcomingMovieImage: {
-    width: width*0.30,
-    height: height*0.22,
+    width: width * 0.30,
+    height: height * 0.22,
     borderRadius: 20,
     borderColor: 'white',
     borderWidth: 2

@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Dimensions, Image, FlatList, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { getImage500Path } from '../api/movie';
 
 const { width, height } = Dimensions.get('window');
 
@@ -15,8 +16,15 @@ const TrendingMovies = ({ data }) => {
     const renderMovies = ({ item }) => (
         <TouchableOpacity onPress={() => handleMovieClick(item)}>
             <View style={styles.card}>
-                <Image source={require('../Resources/Images/MovieAvenger.jpg')} style={styles.image} />
-                <Text style={styles.movieName}>Movie Name</Text>
+                {/* <Image source={require('../Resources/Images/MovieAvenger.jpg')} style={styles.image} /> */}
+                <Image source={{
+                    //uri: image500(item.poster_path)
+                    uri: getImage500Path(item.poster_path)
+                }} 
+                    style={styles.image} 
+                    resizeMode="contain"
+                    />
+                <Text style={styles.movieName}>{item.title}</Text>
             </View>
         </TouchableOpacity>
     )
@@ -50,7 +58,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: width * 0.6, // Each card takes up 60% of the screen width
-        height: 250,
+        height: height*0.35,
         marginRight: 15,
         borderRadius: 10,
         justifyContent: 'center',
@@ -60,8 +68,8 @@ const styles = StyleSheet.create({
         //backgroundColor: 'red'
     },
     image: {
-        width: width * 0.5, //100,
-        height: 200, //100,
+        width: width * 0.6, //100,
+        height: height*0.30, //100,
         borderRadius: 10,
     },
     movieName: {

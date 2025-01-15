@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, StatusBar, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, StatusBar, Image, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TrendingMovies from '../Components/TrendingMovies';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import MovieList from '../Components/MovieList';
 import { useNavigation } from '@react-navigation/native';
 import Loading from '../Components/loading';
+import { fetchTopRatedMovies, fetchTrendingMovies, fetchUpcomingMovies } from '../api/movie';
 // Images
 const menuImage = require('../Resources/Images/Menu.png');
 const searchImage = require('../Resources/Images/Search.png');
@@ -13,16 +14,54 @@ const searchImage = require('../Resources/Images/Search.png');
 const HomeScreen = () => {
   const navigation = useNavigation();
   //const [trending, setTrending] = useState([1,2,3,4,5]);
-  const [trending, setTrending] = useState([
-    { id: '1', title: 'Avengers', image: require('../Resources/Images/MovieAvenger.jpg') },
-    { id: '2', title: 'Iron Man', image: require('../Resources/Images/MovieAvenger.jpg') },
-    { id: '3', title: 'Thor', image: require('../Resources/Images/MovieAvenger.jpg') },
-    { id: '4', title: 'Spiderman', image: require('../Resources/Images/MovieAvenger.jpg') },
-    { id: '5', title: 'Black Widow', image: require('../Resources/Images/MovieAvenger.jpg') },
-  ]);
-  const [upcomingMovie, setUpcomingMovie] = useState([1,2,3,4,5]);
-  const [topRatedMovie, setTopRatedMovie] = useState([1,2,3,4,5]);
-  const [loading, setLoading] = useState(false);
+  const [trending, setTrending] = useState([]);
+  const [upcomingMovie, setUpcomingMovie] = useState([]);
+  const [topRatedMovie, setTopRatedMovie] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Life Cycle
+  useEffect(() => {
+    getTrendingMovies();
+    getUpcomingMovies();
+    getTopRatedMovies();
+  }, [])
+
+  const getTrendingMovies = async () => {
+    const data = await fetchTrendingMovies();
+    console.log('API Response: Trending Movies: ', data)
+    if (data && data.results) {
+      console.log('Trending Results: ', data.results.length)
+      setTrending(data.results)
+    } else {
+      Alert.alert('Error', data.error)
+    }
+    setLoading(false)
+  }
+
+  const getUpcomingMovies = async () => {
+    const data = await fetchUpcomingMovies();
+    console.log('API Response: Upcoming Movies: ', data)
+    if (data && data.results) {
+      console.log('Upcoming Results: ', data.results.length)
+      setUpcomingMovie(data.results)
+    } else {
+      Alert.alert('Error', data.error)
+    }
+    setLoading(false)
+  }
+
+  const getTopRatedMovies = async () => {
+    const data = await fetchTopRatedMovies();
+    console.log('API Response: TopRated Movies: ', data)
+    if (data && data.results) {
+      console.log('TopRated Results: ', data.results.length)
+      setTopRatedMovie(data.results)
+    } else {
+      Alert.alert('Error', data.error)
+    }
+    setLoading(false)
+  }
+
   return (
     <View style={styles.backgroundView}>
       {/* SearchBar and Logo */}
@@ -48,10 +87,10 @@ const HomeScreen = () => {
             contentContainerStyle={{ paddingBottom: 20 }}
           >
             {/* Trending Movies Carousel */}
-            <TrendingMovies data={trending} />
+            { trending.length > 0 && <TrendingMovies data={trending} />}
 
             {/* Upcoming Movies */}
-            <MovieList title='Upcoming Movies' data={upcomingMovie} />
+            { upcomingMovie.length>0 && <MovieList title='Upcoming Movies' data={upcomingMovie} /> }
 
             {/* Top Rated Movies */}
             <MovieList title='Top Rated Movies' data={topRatedMovie} />
