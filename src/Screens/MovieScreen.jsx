@@ -1,12 +1,13 @@
-import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, Dimensions, Image, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { commonStyles } from '../Resources/Themes/commonThemes'
 import { useNavigation } from '@react-navigation/native'
 import { HeartIcon } from 'react-native-heroicons/solid'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Cast from '../Components/Cast'
 import MovieList from '../Components/MovieList'
+import { fetchMovieDetails, image500 } from '../api/movie'
 
 const { width, height } = Dimensions.get('window');
 
@@ -15,15 +16,36 @@ const MovieScreen = ({ route }) => {
     const navigation = useNavigation();
     let movieName = 'Ant-Man and the Wasp: Quantumania'
     const [isFavourite, toggleFavourite] = useState(false);
-    const { title } = route.params
-    const [cast, setCast] = useState([1,2,3,4,5,6,,7]);
-    const [similarMovies, setSimilarMovies] = useState([1,2,3,4,5]);
+    const { id } = route.params
+    const [movieDetail, setMovieDetail] = useState({});
+    const [cast, setCast] = useState([1, 2, 3, 4, 5, 6, , 7]);
+    const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5]);
+
+    useEffect(() => {
+        console.log(`Movie ID: ${id}`)
+        getMovieDetails()
+    }, [])
+
+    // Movie Details
+    const getMovieDetails = async () => {
+        const data = await fetchMovieDetails(id)
+        console.log('Data Receive = ', data)
+        if (data) {
+            setMovieDetail(data)
+            //console.log('Parsed Data = ', movieDetail.params.overview)
+        } else {
+            Alert.alert('Error', data.error)
+        }
+        console.log(`Movie Details = ${data}`)
+    }
+
     return (
         <ScrollView style={styles.backgroundView}>
             <SafeAreaView>
                 <View style={styles.imageContainer}>
                     <Image
-                        source={require('../Resources/Images/MovieAvenger.jpg')}
+                        //source={require('../Resources/Images/MovieAvenger.jpg')}
+                        source={{ uri: image500(movieDetail.poster_path) }}
                         style={{
                             width: width,
                             height: height * 0.55,
@@ -48,12 +70,28 @@ const MovieScreen = ({ route }) => {
             {/* Movie Details */}
             <View style={{ marginHorizontal: 20 }}>
                 {/* Title */}
-                <Text style={styles.movieName}>{movieName}</Text>
+                <Text style={styles.movieName}>{movieDetail.original_title}</Text>
                 {/* Status, release, runtime */}
-                <Text style={{ color: 'white', opacity: 0.7, textAlign: 'center', marginTop: 10 }} >Released • 2020 • 170 min</Text>
-                <Text style={{ color: 'white', opacity: 0.7, textAlign: 'center', marginTop: 10 }} >Action • Thrill • Comedy</Text>
+                <Text style={{ color: 'white', opacity: 0.7, textAlign: 'center', marginTop: 10 }} >Released • {movieDetail?.release_date?.split('-')[0]} • {movieDetail?.runtime} min</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <Text
+                        style={{
+                            color: 'white',
+                            opacity: 0.7,
+                            textAlign: 'center',
+                            marginTop: 10
+                        }}
+                    >
+                        {movieDetail?.genres?.map((genre, index) => {
+                            const showDot = index + 1 !== movieDetail.genres.length;
+                            return genre?.name + (showDot ? ' • ' : '');
+                        }).join('')}
+                    </Text>
+                </View>
                 <Text style={{ color: 'white', opacity: 0.5, textAlign: 'left', marginTop: 10 }}>
-                    As the crew travels through space aboard the starship Elysium, they encounter unforeseen challenges — from deadly cosmic storms to an alien civilization whose intentions are shrouded in mystery. Lena must confront her past, the loss of her family, and the ethical dilemmas of saving a dying species while learning the true nature of the planet they are racing to reach.
+                    {
+                        movieDetail?.overview
+                    }
                 </Text>
             </View>
 
