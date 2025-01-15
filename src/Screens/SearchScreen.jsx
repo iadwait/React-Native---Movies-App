@@ -1,22 +1,58 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Image, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Image, Dimensions, Alert } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { XMarkIcon } from 'react-native-heroicons/solid'
 import { useNavigation } from '@react-navigation/native'
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Loading from '../Components/loading'
+import { fetchMoviesByKeyword, getImage185Path } from '../api/movie'
+import debounce from 'lodash/debounce';
 
 const { width, height } = Dimensions.get('window');
 
 const SearchScreen = () => {
   const navigation = useNavigation();
-  let movieName = 'Ant-Man and the Wasp: Quantumania'
-  const [searchResults, setSearchResults] = useState([1, 2, 3, 4, 5]);
+  const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [text, setText] = useState();
+
+  useEffect(() => {
+    console.log('Inside Searc Screen');
+  },[])
+
+  const handleSearchText = (text) => {
+    setText(text)
+    console.log(text)
+    if (text && text.length > 2) {
+      setLoading(true);
+      // API Call
+      getMoviesByKeyword(text)
+    } else {
+      setSearchResults([])
+    }
+  }
+
+  const handleTextDebounce = useCallback(debounce(handleSearchText, 400), [])
+
+  const getMoviesByKeyword = async (keyword) => {
+    console.log(`Calling Search: ${text}`)
+    const data = await fetchMoviesByKeyword(keyword)
+    if (data && data.results) {
+      setSearchResults(data.results);
+      console.log('Search Movies Received');
+    } else {
+      setSearchResults([]);
+      Alert.alert('Error', data.error);
+    }
+    setLoading(false);
+    console.log('Movie Keyword Response: ', data)
+  }
+
   return (
     <SafeAreaView style={styles.backgroundView}>
       <View style={styles.searchView}>
         <TextInput
+          onChangeText={handleTextDebounce}
           placeholder="Search Movie"
           placeholderTextColor={'lightgray'}
           style={styles.searchTextfield}
@@ -41,15 +77,16 @@ const SearchScreen = () => {
                 {
                   searchResults.map((item, index) => {
                     return (
-                      <TouchableWithoutFeedback key={index}>
+                      <TouchableWithoutFeedback key={index} onPress={() => navigation.navigate('Movie', item)}>
                         <View style={{ marginVertical: 10 }}>
                           <Image
-                            source={require('../Resources/Images/MovieAvenger.jpg')}
+                            //source={require('../Resources/Images/MovieAvenger.jpg')}
+                            source={item.poster_path ? { uri: getImage185Path(item.poster_path) } : require('../Resources/Images/NoProfile.png')}
                             style={{ width: width * 0.40, height: height * 0.20 }}
                           />
                           <Text style={{ color: 'lightgray', textAlign: 'center' }}>
                             {
-                              movieName.length > 22 ? movieName.slice(0, 22) + '...' : movieName
+                              item.title.length > 22 ? item.title.slice(0, 22) + '...' : item.title
                             }
                           </Text>
                         </View>

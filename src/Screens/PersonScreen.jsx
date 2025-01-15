@@ -129,7 +129,7 @@ const PersonScreen = ({ route }) => {
 
                             <View>
                                 <Text style={styles.titleText}>Popularity</Text>
-                                <Text style={styles.valueText}>{doNullCheck(personData.popularity.toFixed(2))}</Text>
+                                <Text style={styles.valueText}>{doNullCheck(personData?.popularity?.toFixed(2))}</Text>
                             </View>
                         </View>
 
