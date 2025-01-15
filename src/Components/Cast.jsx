@@ -16,7 +16,7 @@ const Cast = ({ cast, navigation }) => {
                         return (
                             <TouchableWithoutFeedback
                                 key={index}
-                                onPress={() => navigation.navigate('Person', person)}
+                                onPress={() => navigation.navigate('Person', { person })}
                             >
                                 <View style={{ marginRight: 12 }}>
                                     <Image

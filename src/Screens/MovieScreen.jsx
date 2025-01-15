@@ -7,24 +7,25 @@ import { HeartIcon } from 'react-native-heroicons/solid'
 import { useState, useEffect } from 'react'
 import Cast from '../Components/Cast'
 import MovieList from '../Components/MovieList'
-import { fetchMovieDetails, fetchMovieCredits, image500 } from '../api/movie'
+import { fetchMovieDetails, fetchMovieCredits, image500, fetchMovieSimilar } from '../api/movie'
 
 const { width, height } = Dimensions.get('window');
 
 const MovieScreen = ({ route }) => {
-    console.log(route)
+    console.log("Route: ", route)
     const navigation = useNavigation();
     let movieName = 'Ant-Man and the Wasp: Quantumania'
     const [isFavourite, toggleFavourite] = useState(false);
     const { id } = route.params
     const [movieDetail, setMovieDetail] = useState({});
     const [cast, setCast] = useState([]);
-    const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5]);
+    const [similarMovies, setSimilarMovies] = useState([1, 2]);
 
     useEffect(() => {
         console.log(`Movie ID: ${id}`)
         getMovieDetails()
         getMovieCast()
+        getSimilarMovie()
     }, [])
 
     // Movie Details
@@ -50,6 +51,17 @@ const MovieScreen = ({ route }) => {
             setCast(data.cast)
         } else {
             console.log("Failed to get Cast")
+            Alert.alert('Error', data.error)
+        }
+    }
+
+    // Similar Movie
+    const getSimilarMovie = async () => {
+        const data = await fetchMovieSimilar(id)
+        console.log('Similar Movie: ', data)
+        if (data && data.results) {
+            setSimilarMovies(data.results)
+        } else {
             Alert.alert('Error', data.error)
         }
     }
