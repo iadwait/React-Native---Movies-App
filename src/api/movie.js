@@ -8,7 +8,7 @@ const upcomingMoviesURL = `${baseURL}/movie/upcoming?api_key=${apiKey}`
 const topRatedMoviesURL = `${baseURL}/movie/top_rated?api_key=${apiKey}`
 // Dynamic Endpoints
 const movieDetailsURL = movieId=> `${baseURL}/movie/${movieId}?api_key=${apiKey}`
-const movieCreditsURL = movieId=> `${baseURL}/movie/${id}/credits?api_key=${apiKey}`
+const movieCreditsURL = movieId=> `${baseURL}/movie/${movieId}/credits?api_key=${apiKey}`
 const similarMovieEndpoint = movieId=> `${baseURL}/movie/${movieId}/similar?api_key=${apiKey}`
 
 export const image500 = path=> path? `https://image.tmdb.org/t/p/w500/${path}`: null

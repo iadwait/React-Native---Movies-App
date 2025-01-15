@@ -7,7 +7,7 @@ import { HeartIcon } from 'react-native-heroicons/solid'
 import { useState, useEffect } from 'react'
 import Cast from '../Components/Cast'
 import MovieList from '../Components/MovieList'
-import { fetchMovieDetails, image500 } from '../api/movie'
+import { fetchMovieDetails, fetchMovieCredits, image500 } from '../api/movie'
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,12 +18,13 @@ const MovieScreen = ({ route }) => {
     const [isFavourite, toggleFavourite] = useState(false);
     const { id } = route.params
     const [movieDetail, setMovieDetail] = useState({});
-    const [cast, setCast] = useState([1, 2, 3, 4, 5, 6, , 7]);
+    const [cast, setCast] = useState([]);
     const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5]);
 
     useEffect(() => {
         console.log(`Movie ID: ${id}`)
         getMovieDetails()
+        getMovieCast()
     }, [])
 
     // Movie Details
@@ -37,6 +38,20 @@ const MovieScreen = ({ route }) => {
             Alert.alert('Error', data.error)
         }
         console.log(`Movie Details = ${data}`)
+    }
+
+    // Movie Cast
+    const getMovieCast = async () => {
+        console.log('Inside Movie Cast')
+        const data = await fetchMovieCredits(id)
+        console.log('Inside Movie Cast: 1')
+        if (data && data.cast) {
+            console.log(`Cast Fetched = ${JSON.stringify(data, null, 2)}`)
+            setCast(data.cast)
+        } else {
+            console.log("Failed to get Cast")
+            Alert.alert('Error', data.error)
+        }
     }
 
     return (
