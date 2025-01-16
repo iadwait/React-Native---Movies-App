@@ -1,3 +1,10 @@
+# Acknowledgments
+
+This project was inspired by a tutorial by [Code With Nomi].
+<br>
+Code With Nomi - https://www.youtube.com/@codewithnomi
+
+
 # Steps to run the project
 
 1. Clone or download the zip file
