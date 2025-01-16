@@ -78,7 +78,7 @@ const PersonScreen = ({ route }) => {
                 loading ? (
                     <Loading />
                 ) : (
-                    <ScrollView>
+                    <ScrollView showsVerticalScrollIndicator={false}>
                         {/* Person Details */}
                         <View style={{ alignItems: 'center' }}>
                             <Image
